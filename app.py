@@ -82,15 +82,12 @@ while True:
                 check.Update(addToGengi(x))
             else:
                 check.Update(removeFromGengi(x))
-        #print(gl)
     if event == 'Vista':
         windowName = 'Gengi reiknivél'
         layout = l2()
         window1 = sg.Window(windowName, layout, keep_on_top=True)
         window.Close()
         window = window1
-    #print(event, values)
-    #print("Event:", event)
     if event in shortNames:
         window.Element(event).Update(calculate(window, event))
 

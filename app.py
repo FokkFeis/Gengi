@@ -2,6 +2,9 @@ import urllib.request
 import json
 import PySimpleGUI as sg
 import locale
+from decimal import *
+
+TWOPLACES = Decimal(10) ** -2
 locale.setlocale(locale.LC_ALL, 'is_IS')
 'is_IS'
 locale.format_string('%f', 0, grouping=True)
@@ -43,10 +46,14 @@ def removeFromGengi(gengi):
 
 def l2():
     lay = [[sg.Text('Gjaldmiðill', size=(10, 1)), sg.Text('Kaup', size=(8, 1)), sg.Text('Sala', size=(8, 1)),
-               sg.Text('Upphæð', size=(10, 1))]]
+               sg.Text('Upphæð', size=(20, 1))]]
     lay += [[sg.Text(x['shortName'], size=(10, 1)), sg.Text('{:.2f}'.format(x['value']), size=(8, 1)),
-             sg.Text('{:.2f}'.format(x['askValue']), size=(8, 1)), sg.Input('{:n}'.format(round(1000 / x['askValue'], 2)), size=(12, 1),
-            key=x['shortName'], enable_events=True)] for x in valin_gengi]
+             sg.Text('{:.2f}'.format(x['askValue']),
+				  	size=(8, 1)),
+					sg.Input('{:n}'.format(Decimal(round(1000 / x['askValue'], 2)).quantize(TWOPLACES)),
+					size=(15, 1),
+					key=x['shortName'],
+					enable_events=True)] for x in valin_gengi]
     lay += [[sg.Button('Baka')]]
     return lay
 
@@ -80,7 +87,7 @@ def calculate(window, org):
                 if x['shortName'] == org:
                     continue
                 calc = new_isk / float(x['askValue'])
-                window.Element(x['shortName']).Update('{:n}'.format(round(calc, 2)))
+                window.Element(x['shortName']).Update('{:n}'.format(Decimal(round(calc, 2)).quantize(TWOPLACES)))
     except:
         pass
 
@@ -104,7 +111,6 @@ while True:
             else:
                 check.Update(removeFromGengi(x))
             addToFile()
-    print(shortNames)
     if event == 'Baka':
         windowName = 'Gengi'
         layout = l1()

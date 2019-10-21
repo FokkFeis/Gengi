@@ -104,7 +104,6 @@ while True:
             else:
                 check.Update(removeFromGengi(x))
             addToFile()
-    print(shortNames)
     if event == 'Baka':
         windowName = 'Gengi'
         layout = l1()
